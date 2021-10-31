@@ -1,0 +1,159 @@
+{
+  "$id": "devend/package_config.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "packageConfig",
+  "description": "the schema of a package config, package represents a lib/executable and all its self-maintained stuff, eg: config.",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "the name of the package. if not present, the folder name will be used"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[><=]=[0-9\\.]$",
+      "description": "the version of the pkg, default the latest in the first pkg manager. eg: >=1.0.0"
+    },
+    "disabled": {
+      "type": "boolean",
+      "description": "a convenient switch you can uninstall the config of the package without delete the whole folder"
+    },
+    "configFiles": {
+      "type": "array",
+      "description": "the file group array, each group contain one or more config files, and the operation to apply them",
+      "items": {
+        "type": "object",
+        "oneOf": [
+          { "$ref": "#/$defs/selfRoot" },
+          { "$ref": "#/$defs/overwrite" },
+          { "$ref": "#/$defs/modify" },
+          { "$ref": "#/$defs/plug" }
+        ]
+      },
+      "uniqueItems": true
+    },
+    "pluginComponent": {
+      "type": "object",
+      "description": "some stuff of a mechanism to help other package to plugin the config of this package. eg: oh-my-zsh -> zsh",
+      "properties": {
+        "pluginHook": {
+          "additionalProperties": false,
+          "minProperties": 3,
+          "type": "object",
+          "properties": {
+            "executableFile": {
+              "type": "string",
+              "format": "uri-reference",
+              "description": "not require, the executable if some modify need to be done while plug, the exe should have two interface:initialize, plug"
+            },
+            "intermediateFile": {
+              "type": "string",
+              "format": "uri-reference"
+            },
+            "pluginDeployDirectory": {
+              "type": "string",
+              "description": "where all plugin config goes"
+            }
+          }
+        },
+        "supportedModifyMethods": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "executableFile": {
+                "type": "string",
+                "format": "uri-reference",
+                "description": "path root from pkg config dir(./)"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "$defs": {
+    "selfRoot": {
+      "required": ["uris", "deployDirectoryPath"],
+      "properties": {
+        "uris": {
+          "type": "array",
+          "uniqueItems": true,
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri-reference",
+            "description": "uri-reference: https://www.w3.org/DesignIssues/Relative.html"
+          }
+        },
+        "deployDirectoryPath": {
+          "type": "string",
+          "description": "where those files goes when deploy"
+        }
+      }
+    },
+    "overwrite": {
+      "additionalProperties": false,
+      "minProperties": 3,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "uri-reference: https://www.w3.org/DesignIssues/Relative.html"
+        },
+        "dependedPkg": {
+          "type": "string",
+          "description": "the package name of which you want overwrite"
+        },
+        "dependedUri": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "the file path you want to overwrite(root from the config folder), note if is relative path, the root start from the directory of the dependency config"
+        }
+      }
+    },
+    "modify": {
+      "additionalProperties": false,
+      "minProperties": 4,
+      "properties": {
+        "uri": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "the file type must match the modifyMethod, uri-reference: https://www.w3.org/DesignIssues/Relative.html"
+        },
+        "dependedPkg": {
+          "type": "string",
+          "description": "the package name of which you want modify"
+        },
+        "dependedUri": {
+          "type": "string",
+          "format": "uri-reference",
+          "description": "the file path you want to overwrite(root from the config folder), note if is relative path, the root start from the directory of the dependency config"
+        },
+        "modifyMethod": {
+          "type": "string",
+          "description": "the modify method that the dependedPkg declares it support in \"supportedModifyMethods\" in its config json, eg: jsonPatch, sed command, yamlPatch"
+        }
+      }
+    },
+    "plug": {
+      "required": ["uris", "targetName"],
+      "properties": {
+        "uris": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri-reference",
+            "description": "uri-reference: https://www.w3.org/DesignIssues/Relative.html"
+          }
+        },
+        "targetName": {
+          "type": "string",
+          "description": "the name of the pkg whose config you wanna plug, priority: name in config > name of config folder > name in pkg manager"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "devend",
+  "version": "0.0.1",
+  "description": "a project you can maintain your work environment and deploy it everywhere even in docker",
+  "main": "./core/src/index.js",
+  "repository": "https://github.com/unlockingc/devend",
+  "author": "unlockingc",
+  "license": "MIT",
+  "private": false
+}
