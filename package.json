@@ -1,25 +1,28 @@
 {
-  "name": "devend",
-  "version": "0.0.1",
-  "description": "a project you can maintain your work environment and deploy it everywhere even in docker",
-  "main": "./core/src/index.js",
-  "repository": "https://github.com/unlockingc/devend",
-  "author": "unlockingc",
-  "dependencies": {
-    "commander": ">=8.3.0",
-    "lodash": ">=4.17.21",
-    "ramda": ">=0.27.1",
-    "zx": ">=4.2.0"
-  },
-  "license": "MIT",
-  "private": false,
-  "scripts": {
-    "build": "./core/build_ts.sh",
-    "start": "node ./bin/index.js",
-    "dev": "ts-node ./core/src/index.ts"
-  },
-  "devDependencies": {
-    "ts-node": "^10.4.0",
-    "typescript": "^4.4.4"
-  }
+    "name": "devend",
+    "version": "0.0.1",
+    "description": "a project you can maintain your work environment and deploy it everywhere even in docker",
+    "main": "./core/src/index.js",
+    "repository": "https://github.com/unlockingc/devend",
+    "author": "unlockingc",
+    "dependencies": {
+        "commander": ">=8.3.0",
+        "find-up": "^6.2.0",
+        "fp-ts": "^2.11.5",
+        "lodash": ">=4.17.21",
+        "ramda": ">=0.27.1",
+        "yaml": "1.10.2",
+        "zx": ">=4.2.0"
+    },
+    "license": "MIT",
+    "private": false,
+    "scripts": {
+        "build": "./core/build_ts.sh",
+        "start": "node ./bin/index.js",
+        "dev": "ts-node ./core/src/index.ts"
+    },
+    "devDependencies": {
+        "ts-node": "^10.4.0",
+        "typescript": "^4.4.4"
+    }
 }
